@@ -68,8 +68,14 @@ const doTheThing = async (textAreaIsChanged = false) => {
 			input[i] = input[i].replace(/\*|<|>/g, '');
 			const number = input[i].split('.')[0];
 			let link = input[i].split(' ')[1];
-			const type = link.endsWith('png') ? 'Image' : link.endsWith('gif') ? 'gif' : 'Something fishy';
+			const type =
+				link.endsWith('png') || link.endsWith('jpg')
+					? 'Image'
+					: link.endsWith('gif')
+					? 'gif'
+					: 'Probably something bad but not THAT bad';
 
+			console.log(type);
 			if (link && link.startsWith('http')) {
 				const imgWrap = document.createElement('div');
 
@@ -111,7 +117,7 @@ const doTheThing = async (textAreaIsChanged = false) => {
 								}
 							});
 						},
-						{ root: null, rootMargin: '0px', threshold: 0.5 }
+						{ root: null, rootMargin: '0px', threshold: 0.01 }
 					);
 					observer.observe(img);
 				}
