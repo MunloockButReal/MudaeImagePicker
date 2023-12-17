@@ -78,7 +78,11 @@ const doTheThing = async (textAreaIsChanged = false) => {
 				}
 
 				const img = document.createElement('img');
-				img.setAttribute('data-src', link);
+				if (type === 'Image') {
+					img.setAttribute('data-src', link);
+				} else {
+					img.src = link;
+				}
 
 				imgWrap.classList.add('imageContainer');
 
