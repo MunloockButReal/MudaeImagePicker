@@ -101,3 +101,42 @@ textarea {
 	border: none;
 	color: white;
 }
+
+@media screen and (max-width: 600px) {
+	#fieldImageslabel {
+		font-size: small;
+		max-width: 80%;
+	}
+	#fieldImages {
+		width: 100%;
+	}
+
+	.imageContainer {
+		max-width: 225px;
+	}
+
+	.imageContainer img {
+		width: 200px;
+		height: auto;
+	}
+}
+@media screen and (max-width: 500px) {
+	.imageContainer {
+		max-width: 200px;
+	}
+
+	.imageContainer img {
+		width: 180px;
+		height: auto;
+	}
+}
+
+@media screen and (max-width: 320px) {
+	#fieldImageslabel {
+		font-size: small;
+		max-width: 225px;
+	}
+	#fieldImages {
+		width: 300px;
+	}
+}

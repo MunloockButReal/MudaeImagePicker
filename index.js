@@ -11,9 +11,16 @@ function copyContent(content, area) {
 	document.execCommand('copy');
 
 	if (area) {
+		let width = area.offsetWidth;
+		let height = area.offsetHeight;
+		console.log({ width, height });
+		area.style.setProperty('width', width);
+		area.style.setProperty('height', height);
 		area.innerText = 'Copied!';
 		setTimeout(() => {
 			area.innerText = textarea.value;
+			area.style.removeProperty('width');
+			area.style.removeProperty('height');
 		}, 2000);
 	}
 
@@ -24,7 +31,6 @@ function convertToProxyUrl(originalUrl) {
 	const encodedUrl = encodeURIComponent(originalUrl);
 
 	const proxyUrl = `https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodedUrl}`;
-
 	return proxyUrl;
 }
 const sortingButton = document.querySelector('.sortingButton');
@@ -37,11 +43,14 @@ sortingButton.addEventListener('click', () => {
 	sortAsc = !sortAsc;
 	doTheThing();
 });
-const doTheThing = () => {
+
+const doTheThing = async (textAreaIsChanged = false) => {
 	const TF1V = fieldName.value;
 	let TF2V = fieldImages.value;
 	const wrapper = document.querySelector('.images');
 	wrapper.innerHTML = '';
+
+	const name = TF1V;
 
 	if (TF1V == '' || TF2V == '') {
 		wrapper.innerText = 'Please fill character name and images links first';
@@ -49,47 +58,69 @@ const doTheThing = () => {
 		return;
 	}
 
-	const name = TF1V;
 	let input = TF2V.split('\n');
 	if (sortAsc) {
 		input.reverse();
 	}
 
 	for (let i = 0; i < input.length; i++) {
-		input[i] = input[i].replace(/\*|<|>/g, '');
-		const number = input[i].split('.')[0];
-		let link = input[i].split(' ')[1];
+		try {
+			input[i] = input[i].replace(/\*|<|>/g, '');
+			const number = input[i].split('.')[0];
+			let link = input[i].split(' ')[1];
+			const type = link.endsWith('png') ? 'Image' : link.endsWith('gif') ? 'gif' : 'Something fishy';
 
-		if (link && link.startsWith('http')) {
-			const imgWrap = document.createElement('div');
+			if (link && link.startsWith('http')) {
+				const imgWrap = document.createElement('div');
 
-			if (link.includes('mudae')) {
-				link = convertToProxyUrl(link);
+				if (link.includes('mudae')) {
+					link = convertToProxyUrl(link);
+				}
+
+				const img = document.createElement('img');
+				img.setAttribute('data-src', link);
+
+				imgWrap.classList.add('imageContainer');
+
+				const text = document.createElement('span');
+				text.innerText = `$c ${name} $ ${number}`;
+				text.classList.add('textContent');
+				text.title = 'Click to copy';
+
+				text.addEventListener('click', () => {
+					copyContent(text.innerText, text);
+				});
+				imgWrap.appendChild(img);
+				imgWrap.appendChild(text);
+				wrapper.appendChild(imgWrap);
+
+				// if (textAreaIsChanged) {
+
+				if (type === 'Image') {
+					const observer = new IntersectionObserver(
+						(entries, observer) => {
+							entries.forEach((entry) => {
+								if (entry.isIntersecting) {
+									const lazyImg = entry.target;
+									lazyImg.src = lazyImg.getAttribute('data-src');
+									observer.unobserve(lazyImg);
+								}
+							});
+						},
+						{ root: null, rootMargin: '0px', threshold: 0.5 }
+					);
+					observer.observe(img);
+				}
+
+				let fontSize = window.getComputedStyle(text, null).getPropertyValue('font-size').match(/\d+/)[0];
+				while (text.offsetHeight > 55) {
+					fontSize--;
+					text.style.setProperty('font-size', fontSize + 'px');
+					if (fontSize <= 10) break;
+				}
 			}
-
-			const img = document.createElement('img');
-			img.src = link;
-			img.alt = name;
-
-			imgWrap.classList.add('imageContainer');
-			const text = document.createElement('span');
-			text.innerText = `$c ${name} $ ${number}`;
-			text.classList.add('textContent');
-			text.title = 'Click to copy';
-
-			text.addEventListener('click', () => {
-				copyContent(text.innerText, text);
-			});
-			imgWrap.appendChild(img);
-			imgWrap.appendChild(text);
-			wrapper.appendChild(imgWrap);
-
-			let fontSize = window.getComputedStyle(text, null).getPropertyValue('font-size').match(/\d+/)[0];
-			while (text.offsetHeight > 55) {
-				fontSize--;
-				text.style.setProperty('font-size', fontSize + 'px');
-				if (fontSize <= 10) break;
-			}
+		} catch (error) {
+			console.log(error);
 		}
 	}
 
@@ -99,5 +130,7 @@ const doTheThing = () => {
 };
 
 fieldName.addEventListener('input', doTheThing);
-fieldImages.addEventListener('input', doTheThing);
+fieldImages.addEventListener('input', () => {
+	doTheThing(true);
+});
 doTheThing();
