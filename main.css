@@ -112,7 +112,7 @@ textarea {
 	}
 
 	.imageContainer {
-		max-width: 225px;
+		width: 190px;
 	}
 
 	.imageContainer img {
@@ -120,13 +120,13 @@ textarea {
 		height: auto;
 	}
 }
-@media screen and (max-width: 500px) {
+@media screen and (max-width: 475px) {
 	.imageContainer {
-		max-width: 200px;
+		width: 140px;
 	}
 
 	.imageContainer img {
-		width: 180px;
+		width: 135px;
 		height: auto;
 	}
 }
