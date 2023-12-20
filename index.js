@@ -102,7 +102,7 @@ const doTheThing = async () => {
 			}
 		}
 
-		const ammountOfLinksChanged = links.length != _links.length;
+		const ammountOfLinksChanged = links !== _links;
 
 		if (ammountOfLinksChanged) {
 			_links = links;
