@@ -102,6 +102,11 @@ textarea {
 	color: white;
 }
 
+input:placeholder-shown,
+textarea:placeholder-shown {
+	background-color: rgba(255, 0, 0, 0.103);
+}
+
 @media screen and (max-width: 600px) {
 	#fieldImageslabel {
 		font-size: small;

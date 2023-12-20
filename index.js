@@ -26,12 +26,27 @@ function copyContent(content, area) {
 	document.body.removeChild(textarea);
 }
 
+function convertToImgur_Imgchest(link) {
+	let image = link.includes('mudae.net')
+		? link.split('~')[1].length > 12
+			? `https://cdn.imgchest.com/files/${link.split('~')[1]}`
+			: `https://i.imgur.com/${link.split('~')[1]}`
+		: link;
+
+	return image;
+}
+
 function convertToProxyUrl(originalUrl) {
 	const encodedUrl = encodeURIComponent(originalUrl);
 
 	const proxyUrl = `https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodedUrl}`;
 	return proxyUrl;
 }
+
+const matchLink = (str) => {
+	return str.match(/(https|http):.*\.(gif|png)$/);
+};
+
 const sortingButton = document.querySelector('.sortingButton');
 
 let sortAsc = true;
@@ -72,12 +87,6 @@ const doTheThing = async () => {
 
 	const name = TF1V;
 
-	if (TF1V == '' || TF2V == '') {
-		wrapper.innerText = 'Please fill character name and images links first';
-		prevImages = '';
-		return;
-	}
-
 	let input = TF2V.split('\n');
 	if (sortAsc) {
 		input.reverse();
@@ -85,9 +94,6 @@ const doTheThing = async () => {
 
 	if (inputChanged) {
 		let links = [];
-		const matchLink = (str) => {
-			return str.match(/(https|http):.*\.(gif|png)$/);
-		};
 
 		for (let i = 0; i < input.length; i++) {
 			let link = input[i].trim().split(' ')[1];
@@ -108,28 +114,34 @@ const doTheThing = async () => {
 				try {
 					input[i] = input[i].replace(/\*|<|>/g, '');
 					const number = input[i].split('.')[0];
-					let link = input[i].trim().split(' ')[1];
+					let orinigalImageUrl = input[i].trim().split(' ')[1];
 
-					if (link && matchLink(link)) {
-						const type =
-							link.endsWith('png') || link.endsWith('jpg')
-								? 'Image'
-								: link.endsWith('gif')
-								? 'gif'
-								: 'Probably something bad but not THAT bad';
-
+					if (orinigalImageUrl && matchLink(orinigalImageUrl)) {
 						const imgWrap = document.createElement('div');
 
-						if (link.includes('mudae')) {
-							link = convertToProxyUrl(link);
-						}
+						const imageUrl = convertToImgur_Imgchest(orinigalImageUrl);
 
 						const img = document.createElement('img');
-						if (type === 'Image') {
-							img.setAttribute('data-src', link);
-						} else {
-							img.src = link;
-						}
+						const uniqueId = crypto.randomUUID();
+
+						img.loading = 'lazy';
+						img.src = imageUrl;
+						img.id = input[i].match(/^\d+/)[0];
+						img.setAttribute('referrerpolicy', 'no-referrer');
+						img.setAttribute('uid', uniqueId);
+
+						img.addEventListener('load', (event) => {
+							if (event.target.naturalWidth === 161 || event.target.naturalWidth === 0) {
+								document.querySelector(`img[uid="${uniqueId}"]`).src = orinigalImageUrl;
+							} else {
+								const customEvent = new CustomEvent('imageload', {
+									detail: {
+										name: uniqueId,
+									},
+								});
+								dispatchEvent(customEvent);
+							}
+						});
 
 						imgWrap.classList.add('imageContainer');
 						const text = document.createElement('span');
@@ -143,26 +155,6 @@ const doTheThing = async () => {
 						imgWrap.appendChild(img);
 						imgWrap.appendChild(text);
 						wrapper.appendChild(imgWrap);
-
-						if (type === 'Image') {
-							const observer = new IntersectionObserver(
-								(entries, observer) => {
-									entries.forEach((entry) => {
-										if (entry.isIntersecting) {
-											const lazyImg = entry.target;
-											lazyImg.src = lazyImg.getAttribute('data-src');
-											lazyImg.removeAttribute('data-src');
-											observer.disconnect();
-											// observer.unobserve(lazyImg);
-
-											// console.log(`Image #${number} loaded!`);
-										}
-									});
-								},
-								{ root: null, rootMargin: '0px', threshold: 0.01 }
-							);
-							observer.observe(img);
-						}
 
 						let fontSize = window.getComputedStyle(text, null).getPropertyValue('font-size').match(/\d+/)[0];
 						while (text.offsetHeight > 55) {
