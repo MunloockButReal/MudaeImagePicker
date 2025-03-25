@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudae Note Saver</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+    <div class="inputs">
+        <div class="inputContainer">
+            <label id="fieldImageslabel" for="fieldImages" style="font-size: smaller" ;>Send $mms or $mmn+s in your
+                mudae channel and copy paste the result here
+                <br>
+                <p style="color:orange; margin-top: 5px;">Disclaimer: Characters without notes will be ignored </p>
+
+            </label>
+            <textarea id="fieldImages" placeholder="Notes here..."></textarea>
+            <button type="button" class="sortingButton material-symbols-outlined"
+                title="Change sort way">trending_up</button>
+
+            <form style="width: 600px;display: flex; user-select: none;">
+                <label id="respectLimitationsLabel" style=" margin-right: 10px"><input id="respectLimitations"
+                        type="checkbox" style="width: auto;">Respect Discords
+                    Limitations</label>
+                <label id="nitroLabel"><input id="nitro" type="checkbox" style="width: auto;">Discord Nitro</label>
+            </form>
+
+        </div>
+
+    </div>
+
+    <div id="noteWrapper"></div>
+
+
+    <script src="../js/noteSaver.js"></script>
+</body>
+
+</html>

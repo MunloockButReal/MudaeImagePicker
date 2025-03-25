@@ -1,5 +1,6 @@
-var fieldName = document.getElementById('fieldName');
-var fieldImages = document.getElementById('fieldImages');
+const fieldName = document.getElementById('fieldName');
+const fieldImages = document.getElementById('fieldImages');
+// const colorThief = new ColorThief();
 
 function copyContent(content, area) {
 	// Create a temporary textarea element
@@ -27,20 +28,9 @@ function copyContent(content, area) {
 }
 
 function convertToImgur_Imgchest(link) {
-	let image = link.includes('mudae.net')
-		? link.split('~')[1].length > 12
-			? `https://cdn.imgchest.com/files/${link.split('~')[1]}`
-			: `https://i.imgur.com/${link.split('~')[1]}`
-		: link;
+	let image = link.includes('mudae.net') ? (link.split('~')[1].length > 12 ? `https://cdn.imgchest.com/files/${link.split('~')[1]}` : `https://i.imgur.com/${link.split('~')[1]}`) : link;
 
 	return image;
-}
-
-function convertToProxyUrl(originalUrl) {
-	const encodedUrl = encodeURIComponent(originalUrl);
-
-	const proxyUrl = `https://images1-focus-opensocial.googleusercontent.com/gadgets/proxy?container=focus&refresh=2592000&url=${encodedUrl}`;
-	return proxyUrl;
 }
 
 const matchLink = (str) => {
@@ -50,10 +40,9 @@ const matchLink = (str) => {
 const sortingButton = document.querySelector('.sortingButton');
 
 let sortAsc = true;
+
 sortingButton.addEventListener('click', () => {
-	sortingButton.innerText === 'trending_down'
-		? (sortingButton.innerText = 'trending_up')
-		: (sortingButton.innerText = 'trending_down');
+	sortingButton.innerText === 'trending_down' ? (sortingButton.innerText = 'trending_up') : (sortingButton.innerText = 'trending_down');
 
 	const parent = document.querySelector('.images');
 	const childrens = parent.childNodes;
@@ -119,7 +108,8 @@ const doTheThing = async () => {
 					if (orinigalImageUrl && matchLink(orinigalImageUrl)) {
 						const imgWrap = document.createElement('div');
 
-						const imageUrl = convertToImgur_Imgchest(orinigalImageUrl);
+						const imageUrl = orinigalImageUrl;
+						// const imageUrl = convertToImgur_Imgchest(orinigalImageUrl);
 
 						const img = document.createElement('img');
 						const uniqueId = crypto.randomUUID();

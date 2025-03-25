@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mudae Image Picker</title>
+    <link rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+
+<body>
+
+    <div class="inputs">
+
+
+        <div class="inputContainer">
+            <label for="fieldName">Name:</label>
+
+
+
+
+            <div><input type="text" id="fieldName" placeholder="Wiz" maxlength="250">
+                <!-- <button>Next</button>
+                <button>Prev</button> -->
+            </div>
+        </div>
+
+        <div class="inputContainer">
+            <label id="fieldImageslabel" for="fieldImages" style="font-size: small">Send "$imsi- Name" in your mudae
+                channel and copy
+                paste the result here</label>
+            <textarea id="fieldImages" placeholder="Images going here..."></textarea>
+            <button type="button" class="sortingButton material-symbols-outlined"
+                title="Change sort way">trending_up</button>
+        </div>
+
+    </div>
+
+    <div class="images">Please fill character name and images links first</div>
+
+
+    <script src="../js/imageTools.js"></script>
+</body>
+
+</html>
